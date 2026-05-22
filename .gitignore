@@ -1,0 +1,30 @@
+# Data (NDA-protected, not for public distribution)
+data/*.gpkg
+data/*.xlsx
+data/*.csv
+
+# Pipeline outputs (large files)
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,2 @@
+docs/thailand.html filter=lfs diff=lfs merge=lfs -text
+docs/maharashtra.html filter=lfs diff=lfs merge=lfs -text

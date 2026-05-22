@@ -1,0 +1,36 @@
+country: "thailand_maharashtra"
+
+paths:
+  thailand_gpkg: "/home/claude/trace_project/data/thailand.gpkg"
+  maharashtra_gpkg: "/home/claude/trace_project/data/maharashtra.gpkg"
+  helmet_xlsx: "/home/claude/trace_project/data/helmet_data.xlsx"
+  output_dir: "/home/claude/trace_project/outputs"
+
+weights:
+  t1: 0.35   # Operating speed alignment
+  t2: 0.35   # Road environment alignment
+  t3: 0.30   # VRU protection threshold
+
+thresholds:
+  scr_moderate: 1.00   # V85/limit ratio: moderate penalty starts
+  scr_severe: 1.15     # Severe penalty starts
+  svi_baseline: 0.10   # Speed variance index floor
+  vru_exposure_min: 0.20
+
+safe_system_speeds:
+  pedestrian: 30
+  cyclist: 40
+  ptw: 50
+
+priority_thresholds:
+  immediate: 40
+  secondary: 60
+  monitor: 80
+
+# Helmet SPI - used to boost T3 penalty in low-helmet environments
+helmet_spi:
+  Thailand: 0.778
+  Maharashtra: 0.209   # Very low - PTW passengers almost never wear helmets
+
+# Mapillary API token (set to use CV; leave blank to use network proxy)
+mapillary_token: ""

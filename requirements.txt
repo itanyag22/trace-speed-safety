@@ -1,0 +1,8 @@
+geopandas>=0.14
+pandas>=2.0
+numpy>=1.24
+folium>=0.15
+PyYAML>=6.0
+openpyxl>=3.1
+fiona>=1.9
+shapely>=2.0
