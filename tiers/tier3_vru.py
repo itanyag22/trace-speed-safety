@@ -123,3 +123,4 @@ def run_tier3(gdf, country='Thailand'):
     print(f"  Tier 3 complete. Mean T3={gdf['t3_score'].mean():.1f}, "
           f"Country: {country}")
     return gdf
+# helmet spi multiplier
