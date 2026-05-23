@@ -111,4 +111,3 @@ def run_tier2(gdf, mapillary_token=None, use_urban_pc=False):
     print(f"  Tier 2 complete. Mean T2={gdf['t2_score'].mean():.1f}, "
           f"CV used: 0.0%, Network proxy: 100.0%")
     return gdf
-# peri-urban adjustment added

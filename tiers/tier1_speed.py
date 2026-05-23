@@ -72,4 +72,3 @@ def run_tier1(gdf):
     print(f"  Tier 1 complete. Mean T1={gdf['t1_score'].mean():.1f}, "
           f"Segments with SCR data: {scr_count}")
     return gdf
-# v0.2 speed alignment
