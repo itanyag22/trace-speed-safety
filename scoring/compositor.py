@@ -79,3 +79,4 @@ def run_scoring(gdf, weights):
     print(f"  Scoring complete. P1={p1} ({100*p1/total:.1f}%), "
           f"P2={p2} ({100*p2/total:.1f}%), total={total}")
     return gdf
+# explanation generator updated
