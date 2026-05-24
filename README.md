@@ -51,7 +51,7 @@ The provided ADB datasets include a `StreetImageLink` field containing endpoint 
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/trace-speed-safety
+git clone https://github.com/itanyag22/trace-speed-safety
 cd trace-speed-safety
 pip install -r requirements.txt
 ```
