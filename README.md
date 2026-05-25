@@ -208,23 +208,35 @@ trace/
 
 ## Evaluation approach
 
-Since labeled crash outcomes are not available in the challenge dataset, the evaluation uses three tracks.
+Since labeled crash outcomes are not available in the challenge dataset, TRACE uses three evaluation tracks that test the scoring logic from different angles.
 
-Internal consistency checks that score distributions across road type hierarchies are directionally correct, and that the priority flag distribution is not degenerate.
+- Internal consistency: score distributions are checked against known road type hierarchies. Motorway segments should score differently from residential roads, and urban secondaries should score differently from rural trunks. Where they do not, the tier weights and threshold parameters are examined and adjusted. The priority flag distribution is also checked to confirm the model is not defaulting to a single class.
 
-Sensitivity analysis reruns the composite scoring across a range of weight combinations, varying each tier weight while holding others constant. Segments that remain in P1 across all tested configurations are flagged as robust priority flags.
+- Sensitivity analysis: the composite SSS is recomputed across 14 weight combinations, ranging from equal-weight configurations to single-tier extremes. Segments that remain in P1 across all core combinations are flagged as robust, meaning their misalignment is severe enough that no plausible reweighting changes the conclusion. Segments that shift between P1 and P2 depending on weights are labeled borderline and reported separately.
 
-Spot-check validation manually reviews a stratified sample of segments across the priority spectrum, confirming that the plain-language explanation accurately describes the raw data driving the score.
+- Spot-check validation — a stratified sample of 50 segments across the priority spectrum is reviewed against the raw speed and network data. The purpose is to confirm that the plain-language explanation for each segment accurately reflects what the data actually shows, and that no systematic scoring errors are present.
+
+[!IMPORTANT]
+The absence of crash records as ground truth is a real constraint, not a design choice. Crash validation is documented as the next step in any operational deployment, and the methodology is designed to produce outputs that are directly comparable against crash density data once that data becomes available.
 
 ---
 
 ## Limitations
 
-Tier 2 currently uses road network attributes as a proxy for road environment in all segments where Mapillary imagery is unavailable or sparse. This means the environment scoring reflects road classification and land use categories rather than the physical visual character of the road. The CV integration (see `tiers/tier2_environment.py`) is designed to replace this proxy once a Mapillary API token is available.
+Tier 2 uses network proxies where street imagery is unavailable. The road environment score for most segments is derived from functional class, land use classification, and urban density rather than from visual analysis of the road itself. This means the T2 score reflects what the road is classified as, not necessarily what it looks like on the ground. The CV pipeline using CLIP-based image classification is built into (see `tiers/tier2_environment.py`) and activates when a Mapillary API token is provided. Every segment in the output is flagged with its T2 source so users can see where visual analysis was used versus proxied.
 
-VRU exposure in Tier 3 is estimated from land use, road class, and proximity to activity generators rather than from observed pedestrian or cyclist counts. In road environments where these proxies are weak, such as peri-urban transition zones with ambiguous classification, the T3 score should be interpreted with caution.
+[!TIP]
+To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to config/config.yaml under mapillary_token. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
 
-Segments without posted speed limit data receive a neutral T1 score of 50. These segments appear predominantly in the P2 band and are not false P1 flags, but they represent a data gap that limits the precision of the composite score for those locations.
+VRU exposure is estimated, not observed. Tier 3 weights the Safe System penalty by an estimated exposure score built from land use, road class, proximity to schools and markets, and powered two-wheeler penetration indicators. These are reasonable proxies but they are not pedestrian counts or cyclist surveys. In peri-urban transition zones where land use classification is coarse, the T3 score carries more uncertainty.
+
+[!CAUTION]
+T3-driven P1 flags in peri-urban areas should be treated as candidates for site verification before triggering direct intervention. The score identifies where the risk is plausible given available data. As such, on-ground confirmation is recommended before making any policy action.
+
+Segments without posted speed limit data receive a neutral T1 score. Approximately 80% of Thailand segments and 75% of Maharashtra segments have a posted limit recorded. For the remainder, T1 defaults to 50, which is intentionally neutral and does not inflate or deflate the composite score. These segments are not false flags, but they are not fully scored either. The output flags them clearly.
+
+[!WARNING]
+Do not interpret unscored T1 segments as safe. A neutral T1 score means the data was unavailable, not that the road has no speed misalignment. Field verification or alternative data sources are still needed for complete coverage.
 
 ---
 
