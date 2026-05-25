@@ -8,13 +8,13 @@ TRACE is an analytical framework that asks whether the posted limit is set at th
 
 It does this by evaluating each road segment against three independent evidence streams. The first is how fast traffic actually moves. The second is what the physical road environment implies about safe speed. The third is whether the posted limit protects the most vulnerable users at the injury thresholds defined by Safe System principles. The three produce a composite Speed Safety Score from 0 to 100 for every segment in a network, with a plain-language explanation of what is driving the result and a priority flag that tells a transport official where to act first.
 
-The framework was developed and applied to road network datasets from Thailand and Maharashtra, India, covering approximately 70,000 road segments across both national highway networks and dense urban and peri-urban road environments. The datasets were provided through the AI for Safer Roads Innovation Challenge organized by the Asian Development Bank, in collaboration with the World Bank Development Impact Group, ITU, and AI for Good.
+The framework was developed and applied to road network datasets from Thailand and Maharashtra, India, covering approximately 70,000 road segments across both national highway networks and dense urban and peri-urban road environments. The datasets were provided through the AI for Safer Roads Innovation Challenge organized by the Asian Development Bank (ADB), in collaboration with the World Bank Development Impact Group, International Telecommunication Union (ITU), and AI for Good.
 
 ---
 
 ## What this is
 
-Most speed audit tools are built around compliance, measuring whether drivers are exceeding the posted limit and flagging segments where speeding is frequent. Tools like iRAP assessments, commercial telematics risk scores, and enforcement-oriented analytics all start from the assumption that the limit is correct and the driver is the problem. TRACE treats the limit itself as the thing that needs to be examined, asking whether it was ever set at the right level for the road, its users, and the people most at risk on it.
+Most speed audit tools are built around compliance by measuring whether drivers are exceeding the posted limit and flagging segments where speeding is frequent. Tools like iRAP assessments, commercial telematics risk scores, and enforcement-oriented analytics all start from the assumption that the limit is correct and the driver is the problem. TRACE treats the limit itself as the thing that needs to be examined, asking whether it was ever set at the right level for the road, its users, and the people most at risk on it.
 
 The framework evaluates each road segment against three independent evidence streams.
 
@@ -43,7 +43,7 @@ In Thailand, 20.4% of segments with speed data have a Speed Compliance Ratio abo
 
 ## Interactive maps
 
-The maps below are proof-of-concept visualizations of the Speed Safety Score outputs. Each road segment is color-coded by priority classification. Hovering over a segment shows a tooltip with its score breakdown. Clicking a P1 segment opens a full panel with all three tier scores, the posted limit, the 85th percentile operating speed, and a plain-language explanation of the misalignment.
+The maps below are proof-of-concept visualizations of the Speed Safety Score outputs. Each road segment is color-coded by priority classification. Hovering over a segment shows a tooltip with its score breakdown. Clicking a P1 segment opens a full panel with all three tier scores, the posted limit, the 85th percentile operating speed, and an explanation of the misalignment.
 
 **[Thailand — Speed Safety Score Map](https://itanyag22.github.io/trace-speed-safety/thailand.html)**
 
@@ -232,4 +232,4 @@ Segments without posted speed limit data receive a neutral T1 score of 50. These
 
 MIT License. See `LICENSE` for details.
 
-The speed thresholds applied in Tier 3 are drawn from published guidance by the World Health Organization and the International Transport Forum on Safe System principles in road safety. Both sources are publicly available reference material.
+The speed thresholds applied in Tier 3 are drawn from published guidance by the World Health Organization (WHO) and the International Transport Forum (ITF) on Safe System principles in road safety. Both sources are publicly available reference material.
