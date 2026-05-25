@@ -53,8 +53,8 @@ The maps below are proof-of-concept visualizations of the Speed Safety Score out
 
 | Color | Priority flag | Score range | What it means |
 |---|---|---|---|
-| 🔴 Red | P1: Immediate Review | SSS below 40 | Severe misalignment across multiple tiers. Recommended for immediate speed limit review or road safety audit. |
-| 🟠 Orange | P2: Secondary Review | SSS 40 to 59 | Meaningful misalignment on at least one tier. Include in the next scheduled review cycle. |
+| 🔴  Red | P1: Immediate Review | SSS below 40 | Severe misalignment across multiple tiers. Recommended for immediate speed limit review or road safety audit. |
+| 🟠  Orange | P2: Secondary Review | SSS 40 to 59 | Meaningful misalignment on at least one tier. Include in the next scheduled review cycle. |
 | 🟡 Yellow | P3: Monitor | SSS 60 to 79 | Some misalignment present but not yet at priority intervention level. Flag for monitoring. |
 | 🟢 Green | Acceptable | SSS 80 and above | No significant misalignment detected across the three tiers. |
 
