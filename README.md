@@ -45,9 +45,8 @@ In Thailand, 20.4% of segments with speed data have a Speed Compliance Ratio abo
 
 The maps below are proof-of-concept visualizations of the Speed Safety Score outputs. Each road segment is color-coded by priority classification. Hovering over a segment shows a tooltip with its score breakdown. Clicking a P1 segment opens a full panel with all three tier scores, the posted limit, the 85th percentile operating speed, and an explanation of the misalignment.
 
-**[Thailand — Speed Safety Score Map](https://itanyag22.github.io/trace-speed-safety/thailand.html)**
-
-**[Maharashtra — Speed Safety Score Map](https://itanyag22.github.io/trace-speed-safety/maharashtra.html)**
+- **[Thailand — Speed Safety Score Map](https://itanyag22.github.io/trace-speed-safety/thailand.html)**
+- **[Maharashtra — Speed Safety Score Map](https://itanyag22.github.io/trace-speed-safety/maharashtra.html)**
 
 ### Reading the map
 
