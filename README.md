@@ -214,10 +214,10 @@ Since labeled crash outcomes are not available in the challenge dataset, TRACE u
 
 - Sensitivity analysis: the composite SSS is recomputed across 14 weight combinations, ranging from equal-weight configurations to single-tier extremes. Segments that remain in P1 across all core combinations are flagged as robust, meaning their misalignment is severe enough that no plausible reweighting changes the conclusion. Segments that shift between P1 and P2 depending on weights are labeled borderline and reported separately.
 
-- Spot-check validation — a stratified sample of 50 segments across the priority spectrum is reviewed against the raw speed and network data. The purpose is to confirm that the plain-language explanation for each segment accurately reflects what the data actually shows, and that no systematic scoring errors are present.
+- Spot-check validation: a stratified sample of 50 segments across the priority spectrum is reviewed against the raw speed and network data. The purpose is to confirm that the plain-language explanation for each segment accurately reflects what the data actually shows, and that no systematic scoring errors are present.
 
-[!IMPORTANT]
-The absence of crash records as ground truth is a real constraint, not a design choice. Crash validation is documented as the next step in any operational deployment, and the methodology is designed to produce outputs that are directly comparable against crash density data once that data becomes available.
+> [!IMPORTANT]
+> The absence of crash records as ground truth is a real constraint, not a design choice. Crash validation is documented as the next step in any operational deployment, and the methodology is designed to produce outputs that are directly comparable against crash density data once that data becomes available.
 
 ---
 
@@ -226,7 +226,7 @@ The absence of crash records as ground truth is a real constraint, not a design 
 Tier 2 uses network proxies where street imagery is unavailable. The road environment score for most segments is derived from functional class, land use classification, and urban density rather than from visual analysis of the road itself. This means the T2 score reflects what the road is classified as, not necessarily what it looks like on the ground. The CV pipeline using CLIP-based image classification is built into (see `tiers/tier2_environment.py`) and activates when a Mapillary API token is provided. Every segment in the output is flagged with its T2 source so users can see where visual analysis was used versus proxied.
 
 > [!TIP]
-> To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to config/config.yaml under mapillary_token. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
+> To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to (see `config/config.yaml`) under mapillary_token. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
 
 VRU exposure is estimated, not observed. Tier 3 weights the Safe System penalty by an estimated exposure score built from land use, road class, proximity to schools and markets, and powered two-wheeler penetration indicators. These are reasonable proxies but they are not pedestrian counts or cyclist surveys. In peri-urban transition zones where land use classification is coarse, the T3 score carries more uncertainty.
 
