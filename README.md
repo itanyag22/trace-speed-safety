@@ -222,7 +222,7 @@ Since labeled crash outcomes are not available in the challenge dataset, TRACE u
 
 ## Limitations
 
-Tier 2 uses network proxies where street imagery is unavailable. The road environment score for most segments is derived from functional class, land use classification, and urban density rather than from visual analysis of the road itself. This means the T2 score reflects what the road is classified as, not necessarily what it looks like on the ground. The CV pipeline using CLIP-based image classification is built into (see `tiers/tier2_environment.py`) and activates when a Mapillary API token is provided. Every segment in the output is flagged with its T2 source so users can see where visual analysis was used versus proxied.
+Tier 2 uses network proxies where street imagery is unavailable. The road environment score for most segments is derived from functional class, land use classification, and urban density rather than from visual analysis of the road itself. This means the T2 score reflects what the road is classified as, not necessarily what it looks like on the ground. The CV pipeline using CLIP-based image classification is built into `tiers/tier2_environment.py` and activates when a Mapillary API token is provided. Every segment in the output is flagged with its T2 source so users can see where visual analysis was used versus proxied.
 
 > [!TIP]
 > To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to `config/config.yaml` under `mapillary_token`. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
