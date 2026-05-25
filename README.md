@@ -18,11 +18,11 @@ Most speed audit tools are built around compliance by measuring whether drivers 
 
 The framework evaluates each road segment against three independent evidence streams.
 
-Tier 1 assesses whether the 85th percentile operating speed aligns with the posted limit, or whether the gap between them suggests the limit is structurally out of step with how the road is actually used.
+- Tier 1 assesses whether the 85th percentile operating speed aligns with the posted limit, or whether the gap between them suggests the limit is structurally out of step with how the road is actually used.
 
-Tier 2 assesses whether the physical road environment supports the posted limit, drawing on road network attributes and, where available, street-level imagery analysis.
+- Tier 2 assesses whether the physical road environment supports the posted limit, drawing on road network attributes and, where available, street-level imagery analysis.
 
-Tier 3 assesses whether the posted limit is consistent with Safe System biomechanical thresholds given the estimated exposure of pedestrians, cyclists, and powered two-wheeler users on that segment.
+- Tier 3 assesses whether the posted limit is consistent with Safe System biomechanical thresholds given the estimated exposure of pedestrians, cyclists, and powered two-wheeler users on that segment.
 
 Each tier produces a sub-score from 0 to 100. The three are combined into a composite Speed Safety Score. Every segment output includes the three sub-scores, a plain-language explanation of what is driving the result, and a priority flag indicating whether the segment warrants immediate review, secondary review, monitoring, or no action.
 
@@ -54,7 +54,7 @@ The maps below are proof-of-concept visualizations of the Speed Safety Score out
 | Color | Priority flag | Score range | What it means |
 |---|---|---|---|
 | 🔴  Red | P1: Immediate Review | SSS below 40 | Severe misalignment across multiple tiers. Recommended for immediate speed limit review or road safety audit. |
-| 🟠  Orange | P2: Secondary Review | SSS 40 to 59 | Meaningful misalignment on at least one tier. Include in the next scheduled review cycle. |
+| 🟠    Orange | P2: Secondary Review | SSS 40 to 59 | Meaningful misalignment on at least one tier. Include in the next scheduled review cycle. |
 | 🟡 Yellow | P3: Monitor | SSS 60 to 79 | Some misalignment present but not yet at priority intervention level. Flag for monitoring. |
 | 🟢 Green | Acceptable | SSS 80 and above | No significant misalignment detected across the three tiers. |
 
