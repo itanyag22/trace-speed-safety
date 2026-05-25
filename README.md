@@ -235,7 +235,7 @@ VRU exposure is estimated, not observed. Tier 3 weights the Safe System penalty 
 
 Segments without posted speed limit data receive a neutral T1 score. Approximately 80% of Thailand segments and 75% of Maharashtra segments have a posted limit recorded. For the remainder, T1 defaults to 50, which is intentionally neutral and does not inflate or deflate the composite score. These segments are not false flags, but they are not fully scored either. The output flags them clearly.
 
-> [!WARNING]
+> [!CAUTION]
 > Do not interpret unscored T1 segments as safe. A neutral T1 score means the data was unavailable, not that the road has no speed misalignment. Field verification or alternative data sources are still needed for complete coverage.
 
 ---
