@@ -225,18 +225,18 @@ The absence of crash records as ground truth is a real constraint, not a design 
 
 Tier 2 uses network proxies where street imagery is unavailable. The road environment score for most segments is derived from functional class, land use classification, and urban density rather than from visual analysis of the road itself. This means the T2 score reflects what the road is classified as, not necessarily what it looks like on the ground. The CV pipeline using CLIP-based image classification is built into (see `tiers/tier2_environment.py`) and activates when a Mapillary API token is provided. Every segment in the output is flagged with its T2 source so users can see where visual analysis was used versus proxied.
 
-[!TIP]
-To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to config/config.yaml under mapillary_token. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
+> [!TIP]
+> To enable CV-based Tier 2 scoring, obtain a Mapillary API token and add it to config/config.yaml under mapillary_token. The pipeline will automatically use street imagery for segments where coverage is available and fall back to network proxies where it is not.
 
 VRU exposure is estimated, not observed. Tier 3 weights the Safe System penalty by an estimated exposure score built from land use, road class, proximity to schools and markets, and powered two-wheeler penetration indicators. These are reasonable proxies but they are not pedestrian counts or cyclist surveys. In peri-urban transition zones where land use classification is coarse, the T3 score carries more uncertainty.
 
-[!CAUTION]
-T3-driven P1 flags in peri-urban areas should be treated as candidates for site verification before triggering direct intervention. The score identifies where the risk is plausible given available data. As such, on-ground confirmation is recommended before making any policy action.
+> [!CAUTION]
+> T3-driven P1 flags in peri-urban areas should be treated as candidates for site verification before triggering direct intervention. The score identifies where the risk is plausible given available data. As such, on-ground confirmation is recommended before making any policy action.
 
 Segments without posted speed limit data receive a neutral T1 score. Approximately 80% of Thailand segments and 75% of Maharashtra segments have a posted limit recorded. For the remainder, T1 defaults to 50, which is intentionally neutral and does not inflate or deflate the composite score. These segments are not false flags, but they are not fully scored either. The output flags them clearly.
 
-[!WARNING]
-Do not interpret unscored T1 segments as safe. A neutral T1 score means the data was unavailable, not that the road has no speed misalignment. Field verification or alternative data sources are still needed for complete coverage.
+> [!WARNING]
+> Do not interpret unscored T1 segments as safe. A neutral T1 score means the data was unavailable, not that the road has no speed misalignment. Field verification or alternative data sources are still needed for complete coverage.
 
 ---
 
