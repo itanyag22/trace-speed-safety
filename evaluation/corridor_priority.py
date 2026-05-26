@@ -1,9 +1,7 @@
 """
-
 TRACE (Corridor-Level Priority Table)
 Groups road segments into corridors by named road or road-class/land-use cluster.
 Ranked by priority level then total length.
-
 """
 
 import sys
