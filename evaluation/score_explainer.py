@@ -3,6 +3,7 @@ TRACE - Speed Safety Score Explainer One-Pager
 A single-page PDF designed for non-technical government and policy audiences.
 """
 
+import os
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
@@ -10,30 +11,31 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
-import os
 
-OUTPUT = '/home/claude/trace_project/outputs/TRACE_Score_Explainer.pdf'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUTPUT = os.path.join(BASE_DIR, 'outputs', 'TRACE_Score_Explainer.pdf')
 
-# Palette
-RED     = colors.HexColor('#C0392B')
-ORANGE  = colors.HexColor('#E67E22')
-YELLOW  = colors.HexColor('#D4AC0D')
-GREEN   = colors.HexColor('#1E8449')
-NAVY    = colors.HexColor('#1A2744')
-SLATE   = colors.HexColor('#2C3E50')
-LGRAY   = colors.HexColor('#F4F6F7')
-MGRAY   = colors.HexColor('#BDC3C7')
-DGRAY   = colors.HexColor('#717D7E')
-WHITE   = colors.white
+RED    = colors.HexColor('#C0392B')
+ORANGE = colors.HexColor('#E67E22')
+YELLOW = colors.HexColor('#D4AC0D')
+GREEN  = colors.HexColor('#1E8449')
+NAVY   = colors.HexColor('#1A2744')
+SLATE  = colors.HexColor('#2C3E50')
+LGRAY  = colors.HexColor('#F4F6F7')
+MGRAY  = colors.HexColor('#BDC3C7')
+DGRAY  = colors.HexColor('#717D7E')
+WHITE  = colors.white
 
-W, H = A4   # 595.28 x 841.89 pts
-M = 18*mm   # margin
+W, H = A4
+M = 18*mm
+
 
 def para(c_obj, text, x, y, width, style):
     p = Paragraph(text, style)
     w, h = p.wrap(width, 999)
     p.drawOn(c_obj, x, y - h)
     return h
+
 
 def draw_rounded_rect(c_obj, x, y, w, h, r, fill_color, stroke_color=None):
     c_obj.setFillColor(fill_color)
@@ -44,17 +46,18 @@ def draw_rounded_rect(c_obj, x, y, w, h, r, fill_color, stroke_color=None):
         c_obj.setStrokeColor(fill_color)
     c_obj.roundRect(x, y, w, h, r, fill=1, stroke=1 if stroke_color else 0)
 
+
 def draw_pill(c_obj, x, y, w, h, color, label, text_color=WHITE, fontsize=8):
     draw_rounded_rect(c_obj, x, y, w, h, h/2, color)
     c_obj.setFillColor(text_color)
     c_obj.setFont('Helvetica-Bold', fontsize)
     c_obj.drawCentredString(x + w/2, y + h/2 - fontsize*0.35, label)
 
+
 def build():
     c = canvas.Canvas(OUTPUT, pagesize=A4)
-    c.setTitle('TRACE Speed Safety Score — Explainer')
+    c.setTitle('TRACE Speed Safety Score - Explainer')
 
-    # ── HEADER BAND ──────────────────────────────────────────────────────────
     c.setFillColor(NAVY)
     c.rect(0, H - 52*mm, W, 52*mm, fill=1, stroke=0)
 
@@ -65,9 +68,6 @@ def build():
     c.setFillColor(colors.HexColor('#A9CCE3'))
     c.drawString(M, H - 29*mm, 'Tiered Road Alignment and Composite Evaluation')
 
-    # Tagline
-    c.setFillColor(WHITE)
-    c.setFont('Helvetica', 9)
     tagline = (
         'A tool that assesses whether posted speed limits are set at the right level '
         'for the road, its users, and the people most at risk.'
@@ -77,26 +77,22 @@ def build():
                                leading=13, alignment=TA_LEFT)
     para(c, tagline, M, H - 36*mm, W - 2*M, tag_style)
 
-    # Score badge (large, top right)
     badge_x = W - M - 38*mm
     badge_y = H - 50*mm
     draw_rounded_rect(c, badge_x, badge_y, 38*mm, 38*mm, 4,
                       colors.HexColor('#243660'), colors.HexColor('#3D5A99'))
     c.setFillColor(WHITE)
     c.setFont('Helvetica-Bold', 28)
-    c.drawCentredString(badge_x + 19*mm, badge_y + 22*mm, '0–100')
+    c.drawCentredString(badge_x + 19*mm, badge_y + 22*mm, '0-100')
     c.setFont('Helvetica', 8)
     c.setFillColor(colors.HexColor('#A9CCE3'))
     c.drawCentredString(badge_x + 19*mm, badge_y + 14*mm, 'Speed Safety Score')
     c.drawCentredString(badge_x + 19*mm, badge_y + 9*mm, 'per road segment')
 
-    cur_y = H - 56*mm   # cursor below header
+    cur_y = H - 56*mm
 
-    # ── WHAT THE SCORE MEASURES ──────────────────────────────────────────────
     body_style = ParagraphStyle('body', fontName='Helvetica', fontSize=9,
                                 textColor=SLATE, leading=13.5, alignment=TA_JUSTIFY)
-    label_style = ParagraphStyle('label', fontName='Helvetica-Bold', fontSize=8,
-                                 textColor=NAVY, leading=11, alignment=TA_LEFT)
     head_style = ParagraphStyle('head', fontName='Helvetica-Bold', fontSize=11,
                                 textColor=NAVY, leading=14, alignment=TA_LEFT)
 
@@ -115,7 +111,6 @@ def build():
     h = para(c, intro, M, cur_y, W - 2*M, body_style)
     cur_y -= h + 6*mm
 
-    # ── THREE TIERS ───────────────────────────────────────────────────────────
     h = para(c, 'How the score is built', M, cur_y, W - 2*M, head_style)
     cur_y -= h + 3*mm
 
@@ -138,8 +133,8 @@ def build():
             'color': colors.HexColor('#117A65'),
             'title': 'Road environment alignment',
             'body': (
-                'Assesses whether the road\'s physical context — its functional class, '
-                'land use, and urban density — supports the posted limit. A narrow urban '
+                'Assesses whether the road\'s physical context, its functional class, '
+                'land use, and urban density, supports the posted limit. A narrow urban '
                 'secondary road adjacent to market activity implies a safe speed below '
                 '40 km/h. If the posted limit is 70 km/h, the environment and the sign '
                 'are in conflict. Street imagery analysis refines this assessment '
@@ -170,60 +165,44 @@ def build():
     for i, t in enumerate(tier_data):
         tx = M + i * (tier_w + tier_gap)
         ty = cur_y - tier_box_h
-
-        # Box background
-        draw_rounded_rect(c, tx, ty, tier_w, tier_box_h, 3, LGRAY,
-                          stroke_color=MGRAY)
-
-        # Coloured top stripe
+        draw_rounded_rect(c, tx, ty, tier_w, tier_box_h, 3, LGRAY, stroke_color=MGRAY)
         c.setFillColor(t['color'])
         c.roundRect(tx, ty + tier_box_h - 8*mm, tier_w, 8*mm, 3, fill=1, stroke=0)
         c.rect(tx, ty + tier_box_h - 8*mm, tier_w, 4*mm, fill=1, stroke=0)
-
-        # Tier number + weight
         c.setFillColor(WHITE)
         c.setFont('Helvetica-Bold', 9)
         c.drawString(tx + 3*mm, ty + tier_box_h - 5.5*mm, t['num'])
         c.setFont('Helvetica', 8)
         c.drawRightString(tx + tier_w - 3*mm, ty + tier_box_h - 5.5*mm,
                           f'Weight: {t["weight"]}')
-
-        # Title
         t_style = ParagraphStyle('ts', fontName='Helvetica-Bold', fontSize=7.5,
                                  textColor=NAVY, leading=10)
-        para(c, t['title'], tx + 3*mm, ty + tier_box_h - 10*mm,
-             tier_w - 6*mm, t_style)
-
-        # Body
+        para(c, t['title'], tx + 3*mm, ty + tier_box_h - 10*mm, tier_w - 6*mm, t_style)
         b_style = ParagraphStyle('tb', fontName='Helvetica', fontSize=7,
                                  textColor=SLATE, leading=10, alignment=TA_JUSTIFY)
-        para(c, t['body'], tx + 3*mm, ty + tier_box_h - 16.5*mm,
-             tier_w - 6*mm, b_style)
+        para(c, t['body'], tx + 3*mm, ty + tier_box_h - 16.5*mm, tier_w - 6*mm, b_style)
 
     cur_y -= tier_box_h + 6*mm
 
-    # Formula line
     formula_style = ParagraphStyle('fm', fontName='Helvetica', fontSize=8.5,
                                    textColor=DGRAY, leading=12, alignment=TA_CENTER)
-    h = para(c, 'SSS = 0.35 × T1 + 0.35 × T2 + 0.30 × T3', M, cur_y,
-             W - 2*M, formula_style)
+    h = para(c, 'SSS = 0.35 x T1 + 0.35 x T2 + 0.30 x T3', M, cur_y, W - 2*M, formula_style)
     cur_y -= h + 6*mm
 
-    # ── PRIORITY BANDS ────────────────────────────────────────────────────────
     h = para(c, 'Priority classification', M, cur_y, W - 2*M, head_style)
     cur_y -= h + 3*mm
 
     bands = [
-        (RED,    'P1 — Immediate Review',   'SSS below 40',
+        (RED,    'P1 - Immediate Review', 'SSS below 40',
          'Severe misalignment across multiple tiers. Recommend for immediate '
          'speed limit review or road safety audit.'),
-        (ORANGE, 'P2 — Secondary Review',   'SSS 40 to 59',
+        (ORANGE, 'P2 - Secondary Review', 'SSS 40 to 59',
          'Meaningful misalignment on at least one tier. Include in the next '
          'scheduled review cycle.'),
-        (YELLOW, 'P3 — Monitor',            'SSS 60 to 79',
+        (YELLOW, 'P3 - Monitor',          'SSS 60 to 79',
          'Some misalignment present, not yet at priority intervention level. '
          'Flag for periodic monitoring.'),
-        (GREEN,  'Acceptable',              'SSS 80 and above',
+        (GREEN,  'Acceptable',            'SSS 80 and above',
          'No significant misalignment detected across the three tiers.'),
     ]
 
@@ -232,41 +211,26 @@ def build():
 
     for color, title, score_range, desc in bands:
         by = cur_y - band_h
-
-        # Left colour bar
         draw_rounded_rect(c, M, by, 2.5*mm, band_h, 1, color)
-
-        # Title + score range
         c.setFillColor(color)
         c.setFont('Helvetica-Bold', 8.5)
         c.drawString(M + 5*mm, by + band_h - 4*mm, title)
         c.setFillColor(DGRAY)
         c.setFont('Helvetica', 7.5)
         c.drawString(M + 5*mm, by + band_h - 8.5*mm, score_range)
-
-        # Description
         d_style = ParagraphStyle('ds', fontName='Helvetica', fontSize=7.5,
                                  textColor=SLATE, leading=10.5, alignment=TA_JUSTIFY)
         para(c, desc, M + 46*mm, by + band_h - 3*mm, W - M - 46*mm - M, d_style)
-
         cur_y -= band_h + band_gap
 
     cur_y -= 4*mm
 
-    # ── READING A SEGMENT ─────────────────────────────────────────────────────
     h = para(c, 'Reading a segment result', M, cur_y, W - 2*M, head_style)
     cur_y -= h + 3*mm
 
-    # Example card
     card_h = 28*mm
-    draw_rounded_rect(c, M, cur_y - card_h, W - 2*M, card_h, 3,
-                      LGRAY, stroke_color=MGRAY)
-
-    # Red priority pill
-    draw_pill(c, M + 3*mm, cur_y - 7*mm, 38*mm, 5.5*mm,
-              RED, 'P1: Immediate Review', WHITE, 7.5)
-
-    # Road name + SSS
+    draw_rounded_rect(c, M, cur_y - card_h, W - 2*M, card_h, 3, LGRAY, stroke_color=MGRAY)
+    draw_pill(c, M + 3*mm, cur_y - 7*mm, 38*mm, 5.5*mm, RED, 'P1: Immediate Review', WHITE, 7.5)
     c.setFillColor(NAVY)
     c.setFont('Helvetica-Bold', 9.5)
     c.drawString(M + 44*mm, cur_y - 5.5*mm, 'Phatthanakan Khu Khwang Road')
@@ -274,7 +238,6 @@ def build():
     c.setFillColor(RED)
     c.drawRightString(W - M - 3*mm, cur_y - 5.5*mm, 'SSS: 40')
 
-    # Tier bar chart (mini)
     bar_y    = cur_y - 13*mm
     bar_maxw = 55*mm
     bars = [
@@ -288,32 +251,26 @@ def build():
         c.setFillColor(DGRAY)
         c.setFont('Helvetica', 7)
         c.drawString(bx, brow_y, label)
-        # Track
         c.setFillColor(MGRAY)
         c.roundRect(bx + 8*mm, brow_y, bar_maxw, 3*mm, 1.5, fill=1, stroke=0)
-        # Fill
         c.setFillColor(col)
         fill_w = max(2*mm, bar_maxw * score / 100)
         c.roundRect(bx + 8*mm, brow_y, fill_w, 3*mm, 1.5, fill=1, stroke=0)
-        # Score label
         c.setFillColor(SLATE)
         c.setFont('Helvetica-Bold', 7)
         c.drawString(bx + 8*mm + bar_maxw + 2*mm, brow_y, str(score))
 
-    # Explanation text in card
     ex_text = (
         'Traffic moves at 102 km/h (V85) on a road posted at 80 km/h (SCR 1.28). '
-        'Road environment implies a safe speed of 40–60 km/h, below the posted limit. '
+        'Road environment implies a safe speed of 40-60 km/h, below the posted limit. '
         'Posted limit of 80 km/h exceeds the Safe System VRU threshold of 30 km/h '
         'given high estimated pedestrian exposure.'
     )
     ex_style = ParagraphStyle('ex', fontName='Helvetica', fontSize=7,
                               textColor=DGRAY, leading=10, alignment=TA_JUSTIFY)
     para(c, ex_text, M + 3*mm, cur_y - 16*mm, W - 2*M - 6*mm, ex_style)
-
     cur_y -= card_h + 5*mm
 
-    # ── WHAT TO DO WITH THE OUTPUT ────────────────────────────────────────────
     h = para(c, 'What transport officials can do with these results',
              M, cur_y, W - 2*M, head_style)
     cur_y -= h + 3*mm
@@ -339,9 +296,7 @@ def build():
         ax = M + col * (col_w + 4*mm)
         action_h = 11*mm
         ay = cur_y - row * (action_h + 2*mm) - action_h
-
         draw_rounded_rect(c, ax, ay, col_w, action_h, 2, LGRAY, MGRAY)
-
         at_style = ParagraphStyle('at', fontName='Helvetica-Bold', fontSize=7.5,
                                   textColor=NAVY, leading=10)
         para(c, title, ax + 3*mm, ay + action_h - 2.5*mm, col_w - 6*mm, at_style)
@@ -351,15 +306,13 @@ def build():
 
     cur_y -= 2 * (11*mm + 2*mm) + 5*mm
 
-    # ── FOOTER ────────────────────────────────────────────────────────────────
     c.setFillColor(NAVY)
     c.rect(0, 0, W, 10*mm, fill=1, stroke=0)
     c.setFillColor(colors.HexColor('#A9CCE3'))
     c.setFont('Helvetica', 7)
     c.drawString(M, 3.5*mm,
-                 'TRACE — Tiered Road Alignment and Composite Evaluation  |  '
+                 'TRACE - Tiered Road Alignment and Composite Evaluation  |  '
                  'AI for Safer Roads Innovation Challenge  |  ADB 2026')
-    c.setFillColor(colors.HexColor('#A9CCE3'))
     c.drawRightString(W - M, 3.5*mm,
                       'Safe System thresholds: WHO/ITF Road Safety Guidelines')
 
