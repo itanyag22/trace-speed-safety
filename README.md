@@ -108,7 +108,7 @@ fiona>=1.9
 shapely>=2.0
 ```
 
-For the CV/Mapillary extension (optional):
+For the CV/Mapillary extension:
 ```
 torch>=2.0
 transformers>=4.35
