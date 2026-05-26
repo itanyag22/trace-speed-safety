@@ -1,13 +1,158 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>TRACE Speed Safety Score</title></head>
-<body style="font-family:Arial;max-width:600px;margin:40px auto;padding:0 20px">
-<h2>TRACE</h2>
-  <h2>Tiered Road Alignment and Composite Evaluation</h2>
-<h3>Speed Safety Score Maps</h3>
-<ul>
-<li><a href="thailand.html">Thailand: Speed Safety Score Map</a></li>
-<li><a href="maharashtra.html">Maharashtra: Speed Safety Score Map</a></li>
-</ul>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TRACE Speed Safety Score</title>
+
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+
+    .header {
+      margin-bottom: 36px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 44px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin-top: 14px;
+      font-size: 20px;
+      color: var(--muted);
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      display: block;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #bfdbfe;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.10);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .button-text {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="header">
+      <span class="eyebrow">TRACE</span>
+      <h1>Tiered Road Alignment and Composite Evaluation</h1>
+      <p class="subtitle">
+        Access the Speed Safety Score maps for selected road networks and study areas.
+      </p>
+    </header>
+
+    <section>
+      <h2 class="section-title">Speed Safety Score Maps</h2>
+
+      <div class="grid">
+        <a class="card" href="thailand.html">
+          <h3>Thailand</h3>
+          <p>View the Speed Safety Score map for Thailand.</p>
+          <span class="button-text">Open map →</span>
+        </a>
+
+        <a class="card" href="maharashtra.html">
+          <h3>Maharashtra</h3>
+          <p>View the Speed Safety Score map for Maharashtra.</p>
+          <span class="button-text">Open map →</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      TRACE Speed Safety Score Dashboard
+    </footer>
+  </main>
 </body>
 </html>
