@@ -2,18 +2,21 @@
 
 Priority segments are aggregated into corridors for ministry-level action. Named roads are grouped by road name and class. Segments without a road name are grouped by road class and land use. Corridors are ranked by priority level (P1-containing first) then total length.
 
-**Columns:** SCR = V85 / posted limit. Driver = tier with lowest mean score (T1 speed, T2 environment, T3 VRU protection). VRU threshold = applicable Safe System biomechanical limit in km/h.
+> **Column guide**
+> - **SCR** — Speed Compliance Ratio. V85 divided by the posted speed limit. A value above 1.0 means traffic moves faster than the limit on average.
+> - **Driver** — the tier with the lowest mean score on that corridor. T1 = speed behavior, T2 = road environment, T3 = VRU protection.
+> - **VRU threshold** — the applicable Safe System biomechanical speed limit in km/h for the most exposed vulnerable road user on that corridor.
 
 ---
 
 ## Thailand
 
 Priority corridors: 842 total  
-| P1 corridors: 6 (2116.2 km)  
-| P2 corridors: 836 (21059.0 km)  
-| Named P1 roads: 3
+- **P1 corridors**: 6 (2116.2 km)
+- **P2 corridors**: 836 (21059.0 km)
+- **Named P1 roads**: 3
 
-### P1 corridors — immediate review recommended
+### P1 Corridors — Immediate Review Recommended
 
 | Rank | Road | Class | Land use | P1 segs | P2 segs | Length km | Min SSS | Mean SSS | V85 | Limit | SCR | VRU threshold | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -24,7 +27,7 @@ Priority corridors: 842 total
 | 5 | Phatthanakan Khu Khwang Road | primary | URBAN | **1** | 1 | 15.54 | 39.0 | 40.1 | 100 | 80 | 1.25 | 30 km/h | T3 |
 | 6 | Nakhon In Road | primary | unknown | **1** | 6 | 13.91 | 39.0 | 55.9 | 102 | 80 | 1.27 | 30 km/h | T3 |
 
-### P2 corridors — secondary review (named roads, top 20 by length)
+### P2 Corridors — Secondary Review (Named Roads, Top 20 by Length)
 
 | Rank | Road | Class | Land use | P2 segs | Length km | Mean SSS | V85 | Limit | SCR | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -54,17 +57,17 @@ Priority corridors: 842 total
 ## Maharashtra
 
 Priority corridors: 880 total  
-| P1 corridors: 1 (8.1 km)  
-| P2 corridors: 879 (17027.2 km)  
-| Named P1 roads: 0
+- **P1 corridors**: 1 (8.1 km)
+- **P2 corridors**: 879 (17027.2 km)
+- **Named P1 roads**: 0
 
-### P1 corridors — immediate review recommended
+### P1 Corridors — Immediate Review Recommended
 
 | Rank | Road | Class | Land use | P1 segs | P2 segs | Length km | Min SSS | Mean SSS | V85 | Limit | SCR | VRU threshold | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | [Unnamed secondary / URBAN] | secondary | URBAN | **1** | 4 | 8.05 | 36.0 | 51.8 | 65 | 51 | 1.28 | 30 km/h | T3 |
 
-### P2 corridors — secondary review (named roads, top 20 by length)
+### P2 Corridors — Secondary Review (Named Roads, Top 20 by Length)
 
 | Rank | Road | Class | Land use | P2 segs | Length km | Mean SSS | V85 | Limit | SCR | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|
