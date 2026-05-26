@@ -1,5 +1,5 @@
 """
-TRACE - Interactive Map Renderer using Folium
+TRACE (Interactive Map Renderer using Folium)
 """
 import folium
 import geopandas as gpd
