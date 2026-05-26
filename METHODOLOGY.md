@@ -165,11 +165,21 @@ Segments with Low confidence should not be used for individual-segment prioritiz
 
 ## Scalability design
 
-The framework is designed to degrade gracefully in data-poor environments rather than fail.
+TRACE is built to work with whatever data is available, and not just ideal datasets. When a data layer is missing, the pipeline substitutes a reasonable fallback rather than stopping. The output always tells you which segments used real data and which used a fallback, so you know exactly how much to trust each score.
 
-If Mapillary imagery is unavailable, Tier 2 uses network attribute proxies instead. If contextual layers are absent, Tier 3 uses road class and land use defaults for VRU exposure. If probe data is missing for some segments, those segments receive neutral T1 scores and are scored on T2 and T3 only. If road class or land use classification is incomplete (as it is for approximately 71% of Maharashtra segments), the fallback environment profile is used and flagged in the output.
+| Missing data | What TRACE does instead |
+|---|---|
+| Mapillary street imagery | Tier 2 uses road class and land use to estimate the environment-implied speed |
+| Contextual layers (schools, markets, population) | Tier 3 uses road class and land use to estimate VRU exposure |
+| GPS probe data for some segments | Those segments receive a neutral T1 score and are still scored on T2 and T3 |
+| Incomplete road class or land use data | A fallback environment profile is applied and flagged in the output |
 
-This means the same pipeline can be applied to a data-rich national dataset and a data-sparse district dataset, producing outputs at different confidence levels but using the same methodology. Cross-country score comparison requires recalibration of the weights and thresholds to account for different data environments, which is why these parameters are externalized to a configuration file rather than hardcoded.
+> [!NOTE]
+> This means the same pipeline can be run on a complete national dataset in one country and a partial district-level dataset in another, and still produce comparable, interpretable outputs. The confidence level differs, but the methodology stays the same.
+
+
+> [!IMPORTANT]
+> Comparing scores across countries requires recalibrating the weights and thresholds in `config/config.yaml` to account for differences in data quality and road context. A score of 45 in Thailand and a score of 45 in Maharashtra are not directly comparable without recalibration. See the calibration guidance section below for more details.
 
 ---
 
