@@ -1,35 +1,29 @@
 """
-TRACE - ESRI-Ready Export
-Produces three output formats for ADB GIS Sandbox (ESRI):
+TRACE - ESRI Export Module
 
-1. GeoJSON feature layers — for Experience Builder / Dashboard
-   - Full network (all segments)
-   - P1+P2 priority segments only (lighter, faster load)
+Exports scored road network data in three formats for use in the ADB GIS Sandbox.
 
-2. CSV with lat/lon centroid — for ESRI table join or hosted table
-   - Corridor priority table
+Outputs:
+- GeoJSON: full network and priority-only layers for Experience Builder and Dashboard
+- Shapefile: priority segments with 10-character field names for maximum compatibility
+- CSV: segment centroids with all attributes for table joins
 
-3. Shapefile — maximum ESRI compatibility fallback
-   - Priority segments only (field names truncated to 10 chars)
-
-Field mapping: verbose names -> ESRI-safe short names
-All fields typed explicitly. CRS locked to EPSG:4326.
+All outputs use WGS84 (EPSG:4326). Field names are mapped to ESRI-safe short names.
 """
 
 import sys
-sys.path.insert(0, '/home/claude/trace_project')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(BASE_DIR, 'outputs', 'esri')
 
 import geopandas as gpd
 import pandas as pd
 import numpy as np
 import json
-import os
 import zipfile
 
-OUTPUT_DIR = '/home/claude/trace_project/outputs/esri'
-
-
-# ── Field mapping: original -> (esri_name, description) ─────────────────────
 FIELD_MAP = {
     'english_ro':           ('road_name',   'Road name'),
     'RoadClass':            ('road_class',  'Road functional class'),
@@ -52,7 +46,6 @@ FIELD_MAP = {
     'country':              ('country',     'Country'),
 }
 
-# Shapefile names must be <=10 chars
 SHP_FIELD_MAP = {
     'road_name':  'road_name',
     'road_class': 'road_cls',
@@ -76,7 +69,6 @@ SHP_FIELD_MAP = {
 
 
 def safe_val(x):
-    """Convert mixed types to clean Python native for JSON serialization."""
     if x is None:
         return None
     if isinstance(x, float) and np.isnan(x):
@@ -92,45 +84,30 @@ def safe_val(x):
 
 
 def prepare_gdf(gdf):
-    """Rename fields, clean types, ensure WGS84."""
     gdf = gdf.copy()
-
-    # Ensure WGS84
     if gdf.crs and gdf.crs.to_epsg() != 4326:
         gdf = gdf.to_crs(epsg=4326)
-
-    # Rename to ESRI-safe names
     rename = {orig: info[0] for orig, info in FIELD_MAP.items() if orig in gdf.columns}
     gdf = gdf.rename(columns=rename)
-
-    # Clean types
-    float_cols = ['spd_limit', 'v85_kmh', 't1_scr', 't1_score', 't2_score',
-                  't3_score', 'sss']
+    float_cols = ['spd_limit', 'v85_kmh', 't1_scr', 't1_score', 't2_score', 't3_score', 'sss']
     int_cols   = ['vru_thr', 'p1_count']
-    str_cols   = ['road_name', 'road_class', 'land_use', 'priority',
-                  'driver', 'robustness', 'explain', 'country', 't2_eis', 'img_coords']
-
+    str_cols   = ['road_name', 'road_class', 'land_use', 'priority', 'driver',
+                  'robustness', 'explain', 'country', 't2_eis', 'img_coords']
     for col in float_cols:
         if col in gdf.columns:
             gdf[col] = pd.to_numeric(gdf[col], errors='coerce').round(2)
-
     for col in int_cols:
         if col in gdf.columns:
             gdf[col] = pd.to_numeric(gdf[col], errors='coerce').fillna(0).astype(int)
-
     for col in str_cols:
         if col in gdf.columns:
             gdf[col] = gdf[col].apply(safe_val).fillna('')
-
-    # Keep only mapped columns + geometry
     keep = [v[0] for v in FIELD_MAP.values() if v[0] in gdf.columns] + ['geometry']
     gdf = gdf[[c for c in keep if c in gdf.columns]]
-
     return gdf
 
 
 def export_geojson_full(gdf, path, label):
-    """Export complete network as GeoJSON."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     gdf.to_file(path, driver='GeoJSON')
     size_mb = os.path.getsize(path) / 1e6
@@ -138,7 +115,6 @@ def export_geojson_full(gdf, path, label):
 
 
 def export_geojson_priority(gdf, path, label):
-    """Export P1+P2 segments only — lighter layer for dashboard."""
     priority_gdf = gdf[gdf['priority'].isin([
         'P1: Immediate Review', 'P2: Secondary Review'
     ])].copy()
@@ -149,36 +125,26 @@ def export_geojson_priority(gdf, path, label):
 
 
 def export_shapefile(gdf, folder, label):
-    """Export as shapefile with <=10 char field names."""
     os.makedirs(folder, exist_ok=True)
     shp_gdf = gdf.copy()
-
-    # Apply shapefile name truncation
     rename_shp = {v: SHP_FIELD_MAP.get(v, v[:10]) for v in shp_gdf.columns if v != 'geometry'}
     shp_gdf = shp_gdf.rename(columns=rename_shp)
-
-    # Truncate explain field for shapefile (254 char limit)
     if 'explain' in shp_gdf.columns:
         shp_gdf['explain'] = shp_gdf['explain'].str[:250]
-
     shp_path = os.path.join(folder, 'trace_priority.shp')
     shp_gdf.to_file(shp_path, driver='ESRI Shapefile')
-
-    # Zip shapefile components
     zip_path = folder + '.zip'
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         for ext in ['.shp', '.shx', '.dbf', '.prj', '.cpg']:
             fp = shp_path.replace('.shp', ext)
             if os.path.exists(fp):
                 zf.write(fp, os.path.basename(fp))
-
     size_mb = os.path.getsize(zip_path) / 1e6
     print(f"  [{label}] Shapefile zip: {zip_path} ({size_mb:.1f} MB)")
     return zip_path
 
 
 def export_field_dictionary(path):
-    """Write a field dictionary CSV for ESRI popup configuration."""
     rows = []
     for orig, (esri_name, desc) in FIELD_MAP.items():
         shp_name = SHP_FIELD_MAP.get(esri_name, esri_name[:10])
@@ -194,7 +160,6 @@ def export_field_dictionary(path):
 
 
 def export_centroid_csv(gdf, path, label):
-    """CSV with segment centroid lat/lon for ESRI table joins."""
     df = gdf.drop(columns=['geometry']).copy()
     centroids = gdf.geometry.centroid
     df['centroid_lon'] = centroids.x.round(6)
@@ -205,52 +170,35 @@ def export_centroid_csv(gdf, path, label):
 
 
 def write_esri_readme(path):
-    content = """# TRACE — ESRI GIS Sandbox Import Guide
+    content = """# TRACE - ESRI GIS Sandbox Import Guide
 
 ## Files in this package
 
 | File | Use |
 |---|---|
 | `thailand_full.geojson` | Complete Thailand network (all segments) |
-| `thailand_priority.geojson` | Thailand P1+P2 segments only — use this for the main dashboard layer |
+| `thailand_priority.geojson` | Thailand P1+P2 segments only |
 | `maharashtra_full.geojson` | Complete Maharashtra network |
 | `maharashtra_priority.geojson` | Maharashtra P1+P2 segments only |
 | `thailand_shapefile.zip` | Thailand priority segments as Shapefile |
 | `maharashtra_shapefile.zip` | Maharashtra priority segments as Shapefile |
-| `thailand_centroids.csv` | Segment centroids with all attributes (for table joins) |
+| `thailand_centroids.csv` | Segment centroids with all attributes |
 | `maharashtra_centroids.csv` | Same for Maharashtra |
 | `field_dictionary.csv` | All field names and descriptions |
 
-## Recommended import sequence for ESRI Experience Builder
+## Recommended import sequence
 
 1. Upload `thailand_priority.geojson` and `maharashtra_priority.geojson` as Hosted Feature Layers.
-2. For full network context, upload `thailand_full.geojson` as a second layer — set default symbology to grey and reduce opacity.
-3. Configure popup using `field_dictionary.csv` for human-readable field labels.
-4. In Experience Builder or Dashboard, symbolize by `sss` (Speed Safety Score) using a 4-class colour ramp:
-   - Red (#d62728): sss < 40
-   - Orange (#ff7f0e): sss 40–59
-   - Yellow (#bcbd22): sss 60–79
-   - Green (#2ca02c): sss >= 80
-
-## Recommended popup fields (in order)
-
-1. `road_name` — Road name
-2. `priority` — Priority classification
-3. `sss` — Speed Safety Score
-4. `t1_score`, `t2_score`, `t3_score` — Tier sub-scores
-5. `spd_limit` — Posted speed limit
-6. `v85_kmh` — 85th percentile operating speed
-7. `t1_scr` — Speed Compliance Ratio
-8. `vru_thr` — Safe System VRU threshold
-9. `t2_eis` — Environment-implied speed range
-10. `explain` — Plain-language explanation
+2. Upload full network GeoJSON as a background layer set to grey with reduced opacity.
+3. Configure popups using `field_dictionary.csv` for readable field labels.
+4. Symbolize by `sss` using a 4-class colour ramp:
+   - Red: sss < 40
+   - Orange: sss 40-59
+   - Yellow: sss 60-79
+   - Green: sss >= 80
 
 ## CRS
 All files are in WGS84 (EPSG:4326). No reprojection needed for ESRI Online.
-
-## File size note
-Full GeoJSON files are large (Thailand ~80MB). If upload limits apply,
-use the priority-only GeoJSONs or the shapefiles.
 """
     with open(path, 'w') as f:
         f.write(content)
@@ -260,61 +208,50 @@ use the priority-only GeoJSONs or the shapefiles.
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    outputs_dir = os.path.join(BASE_DIR, 'outputs')
+
     print("Loading outputs...")
     try:
-        th = gpd.read_file('/home/claude/trace_project/outputs/trace_thailand_sensitivity.geojson')
-        mh = gpd.read_file('/home/claude/trace_project/outputs/trace_maharashtra_sensitivity.geojson')
+        th = gpd.read_file(os.path.join(outputs_dir, 'trace_thailand_sensitivity.geojson'))
+        mh = gpd.read_file(os.path.join(outputs_dir, 'trace_maharashtra_sensitivity.geojson'))
     except Exception:
-        th = gpd.read_file('/home/claude/trace_project/outputs/trace_thailand.geojson')
-        mh = gpd.read_file('/home/claude/trace_project/outputs/trace_maharashtra.geojson')
+        th = gpd.read_file(os.path.join(outputs_dir, 'trace_thailand.geojson'))
+        mh = gpd.read_file(os.path.join(outputs_dir, 'trace_maharashtra.geojson'))
 
     print("\nPreparing fields...")
     th_clean = prepare_gdf(th)
     mh_clean = prepare_gdf(mh)
-    print(f"  Thailand: {len(th_clean):,} segments | Fields: {list(th_clean.columns)}")
-    print(f"  Maharashtra: {len(mh_clean):,} segments")
 
     print("\nExporting GeoJSON layers...")
-    export_geojson_full(th_clean,
-        f'{OUTPUT_DIR}/thailand_full.geojson', 'Thailand')
-    export_geojson_priority(th_clean,
-        f'{OUTPUT_DIR}/thailand_priority.geojson', 'Thailand')
-    export_geojson_full(mh_clean,
-        f'{OUTPUT_DIR}/maharashtra_full.geojson', 'Maharashtra')
-    export_geojson_priority(mh_clean,
-        f'{OUTPUT_DIR}/maharashtra_priority.geojson', 'Maharashtra')
+    export_geojson_full(th_clean, os.path.join(OUTPUT_DIR, 'thailand_full.geojson'), 'Thailand')
+    export_geojson_priority(th_clean, os.path.join(OUTPUT_DIR, 'thailand_priority.geojson'), 'Thailand')
+    export_geojson_full(mh_clean, os.path.join(OUTPUT_DIR, 'maharashtra_full.geojson'), 'Maharashtra')
+    export_geojson_priority(mh_clean, os.path.join(OUTPUT_DIR, 'maharashtra_priority.geojson'), 'Maharashtra')
 
     print("\nExporting Shapefiles...")
-    th_priority = th_clean[th_clean['priority'].isin(
-        ['P1: Immediate Review', 'P2: Secondary Review'])].copy()
-    mh_priority = mh_clean[mh_clean['priority'].isin(
-        ['P1: Immediate Review', 'P2: Secondary Review'])].copy()
-    export_shapefile(th_priority,
-        f'{OUTPUT_DIR}/thailand_shapefile', 'Thailand')
-    export_shapefile(mh_priority,
-        f'{OUTPUT_DIR}/maharashtra_shapefile', 'Maharashtra')
+    th_priority = th_clean[th_clean['priority'].isin(['P1: Immediate Review', 'P2: Secondary Review'])].copy()
+    mh_priority = mh_clean[mh_clean['priority'].isin(['P1: Immediate Review', 'P2: Secondary Review'])].copy()
+    export_shapefile(th_priority, os.path.join(OUTPUT_DIR, 'thailand_shapefile'), 'Thailand')
+    export_shapefile(mh_priority, os.path.join(OUTPUT_DIR, 'maharashtra_shapefile'), 'Maharashtra')
 
     print("\nExporting centroid CSVs...")
-    export_centroid_csv(th_priority,
-        f'{OUTPUT_DIR}/thailand_centroids.csv', 'Thailand')
-    export_centroid_csv(mh_priority,
-        f'{OUTPUT_DIR}/maharashtra_centroids.csv', 'Maharashtra')
+    export_centroid_csv(th_priority, os.path.join(OUTPUT_DIR, 'thailand_centroids.csv'), 'Thailand')
+    export_centroid_csv(mh_priority, os.path.join(OUTPUT_DIR, 'maharashtra_centroids.csv'), 'Maharashtra')
 
     print("\nWriting field dictionary and README...")
-    export_field_dictionary(f'{OUTPUT_DIR}/field_dictionary.csv')
-    write_esri_readme(f'{OUTPUT_DIR}/ESRI_IMPORT_GUIDE.md')
+    export_field_dictionary(os.path.join(OUTPUT_DIR, 'field_dictionary.csv'))
+    write_esri_readme(os.path.join(OUTPUT_DIR, 'ESRI_IMPORT_GUIDE.md'))
 
     # Final zip of all ESRI outputs
     print("\nZipping ESRI package...")
-    zip_path = '/home/claude/trace_project/outputs/TRACE_ESRI_package.zip'
+    zip_path = os.path.join(outputs_dir, 'TRACE_ESRI_package.zip')
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         for fname in os.listdir(OUTPUT_DIR):
             fp = os.path.join(OUTPUT_DIR, fname)
             if os.path.isfile(fp):
                 zf.write(fp, fname)
-        # Also include corridor CSVs
         for country in ['thailand', 'maharashtra']:
-            cp = f'/home/claude/trace_project/outputs/corridor_priority_{country}.csv'
+            cp = os.path.join(outputs_dir, f'corridor_priority_{country}.csv')
             if os.path.exists(cp):
                 zf.write(cp, f'corridor_priority_{country}.csv')
 
