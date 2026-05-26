@@ -1,4 +1,4 @@
-# TRACE — Corridor Priority Table
+# TRACE (Corridor Priority Table)
 
 Priority segments are aggregated into corridors for ministry-level action. Named roads are grouped by road name and class. Segments without a road name are grouped by road class and land use. Corridors are ranked by priority level (P1-containing first) then total length.
 
