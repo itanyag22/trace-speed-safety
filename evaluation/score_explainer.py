@@ -1,5 +1,5 @@
 """
-TRACE - Speed Safety Score Explainer One-Pager
+TRACE (Speed Safety Score Explainer One-Pager)
 A single-page PDF designed for non-technical government and policy audiences.
 """
 
