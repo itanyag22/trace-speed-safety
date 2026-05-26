@@ -200,6 +200,7 @@ trace/
 ├── main.py                    # Pipeline orchestrator
 ├── README.md
 ├── METHODOLOGY.md
+├── LICENSE
 └── requirements.txt
 ```
 
