@@ -6,13 +6,13 @@
 
 ## The core question
 
-Speed limits across much of Asia and the Pacific were set under engineering conventions that used observed traffic speeds as the primary criterion. The most common method, setting the limit at or near the 85th percentile of free-flow speeds, has a structural flaw: it normalizes whatever speeds drivers have already adopted rather than asking what speed the road should support given the mix of users on it. The result, in many corridors, is limits that reflect historical driving behavior on roads that were designed primarily for motor vehicles and have since been absorbed into denser, mixed-traffic environments.
+Speed limits across much of Asia and the Pacific Region were set under engineering conventions that used observed traffic speeds as the primary criterion. The most common method was to survey free-flow speeds and set the limit at or near the 85th percentile. This approach has a structural flaw, as it normalizes whatever speeds drivers have already adopted on a road rather than asking what speed that road should support given the mix of people using it. The result, in many corridors, is limits that reflect how fast vehicles moved decades ago on roads that were designed primarily for motor vehicles and have since been absorbed into denser, more complex environments shared with pedestrians, cyclists, and motorcycle riders.
 
-TRACE is built around a different question: not whether drivers comply with the posted limit, but whether the posted limit is set at the right level given the road's physical context, its operating speed profile, and the vulnerability of the people who use it.
+TRACE is built around a different question. Rather than asking whether drivers are complying with the posted limit, it asks whether the posted limit is set at the right level for the road it governs, the people who travel on it, and the people most at risk when something goes wrong.
 
 ---
 
-## Why three tiers
+## Why three tiers?
 
 A single evidence stream cannot answer this question reliably.
 
@@ -79,7 +79,7 @@ In the current implementation, environment-implied speeds are derived from road 
 
 Peri-urban segments receive a 15% reduction on the upper bound of the rural equivalent.
 
-T2 evaluates two sub-signals: whether the posted limit exceeds the environment-implied upper bound, and whether V85 exceeds the environment-implied upper bound. The V85 sub-signal is weighted at 60% of its raw penalty to reflect the fact that operating speeds are influenced by driver behavior as well as environment. The two sub-signals are averaged.
+Tier 2 evaluates two things in combination. The first is whether the posted limit exceeds what the road environment implies is safe. The second is whether V85, the speed at which most traffic moves, also exceeds that implied ceiling. The V85 signal carries slightly less weight than the limit signal because operating speeds reflect driver behavior as much as road design, and the framework is primarily concerned with the limit rather than the driver. The two signals are averaged into the final T2 score.
 
 **CV extension**
 
@@ -95,7 +95,7 @@ A T2 score below 50 means the posted limit, or the actual traffic speed, is subs
 
 **The Safe System basis**
 
-The Safe System approach to road safety starts from a physiological fact: the human body can only absorb a limited impact force before catastrophic injury becomes likely. For pedestrians, the threshold above which fatality becomes probable in a frontal vehicle impact is approximately 30 km/h. For cyclists, it is approximately 40 km/h. For powered two-wheeler users, the relevant threshold for severe injury is approximately 50 km/h, though fatality risk rises at lower speeds due to the absence of crash protection.
+The Safe System approach to road safety starts from a basic physical fact that the human body can only absorb so much force in a collision before the injuries become fatal. For pedestrians, that threshold is around 30 km/h. For cyclists it is around 40 km/h. And for powered two-wheeler riders the threshold for severe injury sits around 50 km/h, though the risk of death rises at lower speeds because motorcycles and scooters offer no structural protection in a crash.
 
 These thresholds are not design targets in the sense that roads should always be limited to these speeds. They are injury thresholds in the sense that, wherever vulnerable road users are present and exposed to vehicle traffic, speed limits above these thresholds mean the system is not tolerant of human error. A pedestrian who steps into a 60 km/h traffic stream is in a situation where a driver error of one second is likely to be fatal.
 
@@ -103,11 +103,11 @@ These thresholds are not design targets in the sense that roads should always be
 
 Tier 3 applies these thresholds weighted by an estimated VRU exposure score for each segment. Exposure is estimated from available proxy variables:
 
-*Pedestrian exposure* is estimated from population density (where available), land use classification, and proximity to activity generators including schools and markets. It is higher on urban and secondary roads and lower on motorways and rural trunk roads.
+- *Pedestrian exposure* is estimated from population density (where available), land use classification, and proximity to activity generators including schools and markets. It is higher on urban and secondary roads and lower on motorways and rural trunk roads.
 
-*Cyclist exposure* is estimated from intersection density (high intersection density correlates with cycling activity in urban areas) and urban classification.
+- *Cyclist exposure* is estimated from intersection density (high intersection density correlates with cycling activity in urban areas) and urban classification.
 
-*PTW exposure* is set at elevated baseline levels for both datasets, reflecting the high market penetration of powered two-wheelers in Thailand and Maharashtra. The Maharashtra baseline is adjusted upward further, based on available survey data showing significantly higher PTW use on rural roads in the region.
+- *PTW exposure* is set at elevated baseline levels for both datasets, reflecting the high market penetration of powered two-wheelers in Thailand and Maharashtra. The Maharashtra baseline is adjusted upward further, based on available survey data showing significantly higher PTW use on rural roads in the region.
 
 **The helmet SPI modifier**
 
@@ -167,7 +167,7 @@ Segments with Low confidence should not be used for individual-segment prioritiz
 
 The framework is designed to degrade gracefully in data-poor environments rather than fail.
 
-If Mapillary imagery is unavailable, Tier 2 uses network attribute proxies. If contextual layers are absent, Tier 3 uses road class and land use defaults for VRU exposure. If probe data is missing for some segments, those segments receive neutral T1 scores and are scored on T2 and T3 only. If road class or land use classification is incomplete (as it is for approximately 71% of Maharashtra segments), the fallback environment profile is used and flagged in the output.
+If Mapillary imagery is unavailable, Tier 2 uses network attribute proxies instead. If contextual layers are absent, Tier 3 uses road class and land use defaults for VRU exposure. If probe data is missing for some segments, those segments receive neutral T1 scores and are scored on T2 and T3 only. If road class or land use classification is incomplete (as it is for approximately 71% of Maharashtra segments), the fallback environment profile is used and flagged in the output.
 
 This means the same pipeline can be applied to a data-rich national dataset and a data-sparse district dataset, producing outputs at different confidence levels but using the same methodology. Cross-country score comparison requires recalibration of the weights and thresholds to account for different data environments, which is why these parameters are externalized to a configuration file rather than hardcoded.
 
@@ -177,24 +177,30 @@ This means the same pipeline can be applied to a data-rich national dataset and 
 
 Three evaluation tracks are used in the absence of crash ground truth:
 
-**Internal consistency** checks that the distribution of scores across road type hierarchies is directionally correct (motorways should score differently from residential roads), that the priority flag distribution is not degenerate, and that the plain-language explanations accurately describe the raw data driving the score.
+- **Internal consistency** checks that the distribution of scores across road type hierarchies is directionally correct (i.e., motorways should score differently from residential roads), that the priority flag distribution is not degenerate, and that the plain-language explanations accurately describe the raw data driving the score.
 
-**Sensitivity analysis** reruns the composite scoring across weight combinations where each tier weight is varied by ±0.10 while the others are adjusted proportionally. Segments that remain P1 across all tested configurations are labeled as robust priority flags. Segments that move between P1 and P2 depending on weights are labeled as borderline and noted in the output.
+- **Sensitivity analysis** reruns the composite scoring across weight combinations where each tier weight is varied by ±0.10 while the others are adjusted proportionally. Segments that remain P1 across all tested configurations are labeled as robust priority flags. Segments that move between P1 and P2 depending on weights are labeled as borderline and noted in the output.
 
-**Spot-check validation** manually reviews a stratified sample of 50 segments (10 P1, 20 P2, 10 P3, 10 Acceptable) against the raw speed and network data to confirm the score direction is correct and the explanation is accurate. Results are documented in `evaluation/spot_check_report.md`.
+- **Spot-check validation** manually reviews a stratified sample of 50 segments (10 P1, 20 P2, 10 P3, 10 Acceptable) against the raw speed and network data to confirm the score direction is correct and the explanation is accurate. Results are documented in `evaluation/spot_check_report.md`.
 
 ---
 
 ## Calibration guidance for new countries
 
-When applying TRACE to a new country dataset:
+When applying TRACE to a new country, work through the following steps before treating any outputs as ready for policy use.
 
-1. Review the environment-implied speed table in `tiers/tier2_environment.py` against local road design standards. The defaults are calibrated for mixed-traffic Asian road environments and may not be appropriate for countries with stricter separation between motor vehicle and non-motorized infrastructure.
+> [!IMPORTANT]
+> Complete all five steps in order. Skipping calibration before sharing outputs with government counterparts risks misidentifying priority segments.
 
-2. Review the VRU exposure baselines in `tiers/tier3_vru.py`. PTW penetration varies widely across the region. Countries with low PTW use (Australia, New Zealand, Japan in urban areas) should reduce the PTW exposure baseline.
+1. **Check the environment-implied speed table against local road standards.** The defaults in `tiers/tier2_environment.py` are calibrated for mixed-traffic Asian road environments where motorized and non-motorized users share the same surface. Countries with more developed pedestrian and cycling infrastructure may need lower implied speed ceilings for urban road classes.
 
-3. Set the helmet SPI values in `config/config.yaml` to reflect country-level survey data. The helmet modifier has a material effect on T3 scores in low-compliance environments.
+2. **Review powered two-wheeler exposure baselines.** PTW penetration varies significantly across the region. Countries where motorcycle use is low, such as Australia, New Zealand, or Japan in urban areas, should reduce the PTW exposure baseline in `tiers/tier3_vru.py` to avoid overstating VRU risk on roads where riders are rarely present.
 
-4. Run the sensitivity analysis and review the borderline-flag proportion. A proportion above 30% suggests the default weights may not be well-calibrated for the data environment.
+3. **Update the helmet compliance values.** The helmet SPI modifier in `config/config.yaml` has a direct effect on Tier 3 scores. Set it to reflect the most recent country-level survey data. In low-compliance environments the modifier amplifies the T3 penalty, which is intentional, but it should be grounded in evidence rather than left at the default.
 
-5. Where crash data is available, validate the priority ranking against crash density by segment. Segments with high crash density that do not appear in P1 or P2 indicate a calibration gap.
+4. **Run the sensitivity analysis before finalizing outputs.** If more than 30% of segments are classified as borderline, the default weights may not be well suited to the local data environment. Adjust and rerun before sharing results with government counterparts.
+
+> [!TIP]
+> Run python `evaluation/sensitivity_analysis.py` after any weight change. The borderline proportion is printed to the console at the end of the run.
+
+5. **Validate against crash records where they exist.** If crash density data is available at the segment level, compare it against the P1 and P2 priority rankings. Segments with high crash density that do not appear in the priority list indicate a calibration gap that needs to be investigated before the outputs are used to inform decisions.
