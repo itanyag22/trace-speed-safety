@@ -35,7 +35,7 @@
     }
 
     .header {
-      margin-bottom: 36px;
+      margin-bottom: 42px;
     }
 
     .eyebrow {
@@ -59,22 +59,29 @@
     }
 
     .subtitle {
-      max-width: 720px;
-      margin-top: 14px;
-      font-size: 20px;
+      max-width: 780px;
+      margin-top: 16px;
+      font-size: 19px;
       color: var(--muted);
     }
 
+    .maps-section {
+      margin-top: 10px;
+    }
+
     .section-title {
-      margin: 0 0 18px;
-      font-size: 22px;
+      margin: 0 0 22px;
+      font-size: 24px;
       letter-spacing: -0.01em;
+      text-align: center;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
+      justify-content: center;
+      align-items: stretch;
     }
 
     .card {
@@ -126,13 +133,15 @@
   <main class="page">
     <header class="header">
       <span class="eyebrow">TRACE</span>
+
       <h1>Tiered Road Alignment and Composite Evaluation</h1>
+
       <p class="subtitle">
-        Access the Speed Safety Score maps for selected road networks and study areas.
+        TRACE was developed for the AI for Safer Roads Innovation Challenge organized by the Asian Development Bank (ADB), in collaboration with the World Bank Development Impact Group, International Telecommunication Union (ITU), and AI for Good.
       </p>
     </header>
 
-    <section>
+    <section class="maps-section">
       <h2 class="section-title">Speed Safety Score Maps</h2>
 
       <div class="grid">
@@ -151,7 +160,7 @@
     </section>
 
     <footer class="footer">
-      TRACE Speed Safety Score Dashboard
+      Copyright (©) Ivan Harris Tanyag, University of the Philippines Diliman.
     </footer>
   </main>
 </body>
