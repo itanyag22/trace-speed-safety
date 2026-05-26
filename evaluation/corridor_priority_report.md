@@ -2,10 +2,10 @@
 
 Priority segments are aggregated into corridors for ministry-level action. Named roads are grouped by road name and class. Segments without a road name are grouped by road class and land use. Corridors are ranked by priority level (P1-containing first) then total length.
 
-> **Column guide**
-> - **SCR** — Speed Compliance Ratio. V85 divided by the posted speed limit. A value above 1.0 means traffic moves faster than the limit on average.
-> - **Driver** — the tier with the lowest mean score on that corridor. T1 = speed behavior, T2 = road environment, T3 = VRU protection.
-> - **VRU threshold** — the applicable Safe System biomechanical speed limit in km/h for the most exposed vulnerable road user on that corridor.
+**Column guide**
+- **SCR**: Speed Compliance Ratio. V85 divided by the posted speed limit. A value above 1.0 means traffic moves faster than the limit on average.
+- **Driver**: the tier with the lowest mean score on that corridor. T1 = speed behavior, T2 = road environment, T3 = VRU protection.
+- **VRU threshold**: the applicable Safe System biomechanical speed limit in km/h for the most exposed vulnerable road user on that corridor.
 
 ---
 
