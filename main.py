@@ -1,13 +1,13 @@
 """
-TRACE - Main Pipeline Orchestrator
+TRACE (Main Pipeline Orchestrator)
 Tiered Road Alignment and Composite Evaluation
 
-Runs on Thailand and Maharashtra datasets from ADB challenge.
+Runs on Thailand and Maharashtra datasets from ADB AI for Safer Roads Innovation Challenge.
 """
 
 import sys
 import os
-sys.path.insert(0, '/home/claude/trace_project')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import geopandas as gpd
 import pandas as pd
