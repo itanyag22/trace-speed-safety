@@ -1,7 +1,6 @@
 """
-TRACE - ESRI Export Module
-
-Exports scored road network data in three formats for use in the ADB GIS Sandbox.
+TRACE (ESRI Export Module)
+It exports scored road network data in three formats for use in the ADB GIS Sandbox.
 
 Outputs:
 - GeoJSON: full network and priority-only layers for Experience Builder and Dashboard
