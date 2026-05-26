@@ -1,4 +1,4 @@
-# TRACE Methodology
+# TRACE (Methodology)
 
 **Tiered Road Alignment and Composite Evaluation**
 
