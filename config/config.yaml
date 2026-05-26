@@ -1,10 +1,10 @@
 country: "thailand_maharashtra"
 
 paths:
-  thailand_gpkg: "/home/claude/trace_project/data/thailand.gpkg"
-  maharashtra_gpkg: "/home/claude/trace_project/data/maharashtra.gpkg"
-  helmet_xlsx: "/home/claude/trace_project/data/helmet_data.xlsx"
-  output_dir: "/home/claude/trace_project/outputs"
+  thailand_gpkg: "data/thailand.gpkg"
+  maharashtra_gpkg: "data/maharashtra.gpkg"
+  helmet_xlsx: "data/helmet_data.xlsx"
+  output_dir: "outputs"
 
 weights:
   t1: 0.35   # Operating speed alignment
@@ -18,19 +18,21 @@ thresholds:
   vru_exposure_min: 0.20
 
 safe_system_speeds:
-  pedestrian: 30
-  cyclist: 40
-  ptw: 50
+  pedestrian: 30   # km/h - fatal impact threshold for pedestrians
+  cyclist: 40      # km/h - fatal impact threshold for cyclists
+  ptw: 50          # km/h - severe injury threshold for powered two-wheeler users
 
 priority_thresholds:
-  immediate: 40
-  secondary: 60
-  monitor: 80
+  immediate: 40    # SSS below this -> P1: Immediate Review
+  secondary: 60    # SSS below this -> P2: Secondary Review
+  monitor: 80      # SSS below this -> P3: Monitor
 
 # Helmet SPI - used to boost T3 penalty in low-helmet environments
+# Maharashtra value is very low: PTW passengers almost never wear helmets
 helmet_spi:
   Thailand: 0.778
-  Maharashtra: 0.209   # Very low - PTW passengers almost never wear helmets
+  Maharashtra: 0.209
 
-# Mapillary API token (set to use CV; leave blank to use network proxy)
+# Mapillary API token - set this to enable CV-based Tier 2 scoring
+# Leave blank to use network attribute proxies instead
 mapillary_token: ""
