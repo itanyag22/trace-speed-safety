@@ -1,8 +1,10 @@
-# TRACE — Sensitivity Analysis Report
+# TRACE (Sensitivity Analysis Report)
 
-This report tests how Priority 1 segment classifications respond to variation in tier weights. The analysis distinguishes between core combinations, which represent plausible operational weightings where all three tiers contribute, and reference combinations, which are single-tier extremes used for diagnostic purposes only.
+This report tests how the Priority 1 segment classification holds up when the weights assigned to each tier are varied. The goal is to understand which P1 flags are robust findings that would appear regardless of how the three tiers are weighted, and which are more sensitive to the specific weight configuration used. 
 
-Robustness is graded against the eight core combinations: a segment is Robust if it is P1 under all eight, Strong if P1 under six or more, Moderate if P1 under four or more, and Borderline if P1 under fewer than four.
+Two types of weight combinations are tested. Core combinations represent plausible operational weightings where all three tiers contribute to the final score. Reference combinations are single-tier extremes included for diagnostic purposes, to show what the output would look like if only one dimension of misalignment were considered. 
+
+Robustness is graded based on how many of the eight core combinations a segment appears in as P1. A segment graded Robust is P1 under all eight configurations. Strong means P1 under six or seven. Moderate means four or five. Borderline means fewer than four.
 
 ---
 
@@ -76,7 +78,7 @@ The primary driver is the tier with the lowest sub-score on each P1 segment.
 | T1 | 2 | Speed behavior is the dominant concern — traffic exceeds limit structurally |
 | T3 | 31 | VRU exposure gap is dominant — limit far exceeds Safe System threshold |
 
-### Default P1 segments — full detail
+### Default P1 segments (full detail)
 
 | Road | Class | Land use | Limit | V85 | SCR | T1 | T2 | T3 | SSS | Robustness | Core P1 count | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -157,7 +159,7 @@ The primary driver is the tier with the lowest sub-score on each P1 segment.
 |---|---|---|
 | T3 | 1 | VRU exposure gap is dominant — limit far exceeds Safe System threshold |
 
-### Default P1 segments — full detail
+### Default P1 segments (full detail)
 
 | Road | Class | Land use | Limit | V85 | SCR | T1 | T2 | T3 | SSS | Robustness | Core P1 count | Driver |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -167,8 +169,8 @@ The primary driver is the tier with the lowest sub-score on each P1 segment.
 
 ## Key findings
 
-The majority of default P1 segments in both countries are T3-driven: their primary misalignment is the gap between the posted limit and the Safe System biomechanical threshold for the most exposed vulnerable road user class on that segment. This means their P1 classification is sensitive to T3 weight. Under T3-heavy configurations they remain firmly P1; under T2-heavy or T3-light configurations some move to P2.
+Most P1 segments in both countries are driven primarily by Tier 3. The main reason these segments score below 40 is not that traffic moves far above the posted limit, but that the posted limit itself sits well above the Safe System injury threshold for the most exposed vulnerable road users on that corridor. A road posted at 80 km/h in an area with high pedestrian exposure will score poorly on T3 regardless of how well traffic complies with the sign.
 
-This is a finding about the nature of the problem, not a weakness in the methodology. The Safe System framework explicitly places VRU protection as the primary criterion for speed limit appropriateness. A ministry that follows Safe System principles should weight T3 at least as heavily as T1 and T2, which would strengthen the P1 classification for the identified segments rather than weaken it. The default weights (0.35/0.35/0.30) are conservative.
+This is a finding about the nature of the problem, not a limitation of the methodology. The Safe System framework treats VRU protection as the primary criterion for speed limit appropriateness, not a secondary adjustment. A transport ministry operating under Safe System principles would apply at least as much weight to T3 as to T1 and T2, which would make the P1 flags stronger rather than weaker. The default weights used in this analysis (0.35 for T1, 0.35 for T2, 0.30 for T3) are deliberately conservative.
 
-Segments that survive T2-heavy and T3-light weightings represent cases where speed misalignment alone is severe enough to warrant P1 classification. These are the most operationally conservative flags: a segment that scores P1 even when VRU protection is underweighted has a problem that goes beyond Safe System compliance alone.
+Segments that remain in P1 even under T2-heavy or T3-light weight configurations are the most operationally robust flags in the dataset. A segment that scores P1 when VRU protection is underweighted has a speed misalignment problem severe enough to stand on its own, independent of Safe System thresholds. These are the segments that warrant the most urgent attention.
